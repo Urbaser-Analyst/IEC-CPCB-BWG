@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>IEC CPCB BWG</title>
+<style>
+  :root{
+        --ink:#102A43;
+    --paper:#F8FCFF;
+    --card:#FFFFFF;
+    --line:#D8EAF5;
+    --moss:#3B56D9;
+    --moss-dark:#3B56D9;
+    --clay:#00e1ff;
+    --warn:#F44336;
+    --ok:#43A047;
+    --muted:#78909C;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding-bottom:60px;
+  }
+  header{
+    background:var(--moss-dark);
+    color:#ffffff;
+    padding:18px 20px 16px;
+    position:sticky;
+    top:0;
+    z-index:20;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+  }
+  
+.header-container{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.logo{
+    width:55px;
+    height:55px;
+    object-fit:contain;
+    background:#fff;
+    border-radius:10px;
+    padding:3px;
+    flex-shrink:0;
+}
+
+.header-text{
+    display:flex;
+    flex-direction:column;
+}
+
+.header-text h1{
+    margin:0;
+    font-size:1.05rem;
+    font-weight:700;
+}
+
+.header-text p{
+    margin:4px 0 0;
+    font-size:.78rem;
+}
+
+  header h1{
+    margin:0;
+    font-size:1.05rem;
+    letter-spacing:.02em;
+    font-weight:700;
+  }
+  header p{
+    margin:4px 0 0;
+    font-size:.78rem;
+    color:#000000;
+  }
+  main{
+    max-width:560px;
+    margin:0 auto;
+    padding:16px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-bottom:14px;
+  }
+  .card h2{
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--muted);
+    margin:0 0 12px;
+    font-weight:700;
+  }
+  .field{
+    margin-bottom:14px;
+  }
+  .field:last-child{margin-bottom:0;}
+  label{
+    display:block;
+    font-size:.82rem;
+    font-weight:600;
+    margin-bottom:5px;
+    color:var(--ink);
+  }
+  label .opt{
+    font-weight:400;
+    color:var(--muted);
+    font-size:.75rem;
+  }
+  input[type=text],
+  input[type=tel],
+  input[type=email],
+  input[type=number],
+  select,
+  textarea{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-size:.95rem;
+    background:#fff;
+    color:var(--ink);
+    font-family:inherit;
+  }
+  input:focus,select:focus,textarea:focus{
+    outline:2px solid var(--moss);
+    outline-offset:1px;
+    border-color:var(--moss);
+  }
+  input[readonly]{
+    background:#f1efe6;
+    color:var(--muted);
+  }
+  textarea{resize:vertical;min-height:64px;}
+  .row2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .yn{
+    display:flex;
+    gap:10px;
+  }
+  .yn label{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px;
+    font-weight:600;
+    cursor:pointer;
+    font-size:.9rem;
+  }
+  .yn input{width:16px;height:16px;}
+  .yn label.checked{
+    border-color:var(--moss);
+    background:#eaf3ee;
+    color:var(--moss-dark);
+  }
+
+  /* GPS status */
+  .gps-box{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px;
+    background:#fbfaf5;
+  }
+  .gps-dot{
+    width:10px;height:10px;border-radius:50%;
+    background:var(--warn);
+    margin-top:5px;
+    flex-shrink:0;
+  }
+  .gps-dot.ok{background:var(--ok);}
+  .gps-dot.pending{background:#c99a2e;animation:pulse 1.2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+  .gps-text{flex:1;font-size:.85rem;line-height:1.4;}
+  .gps-text b{display:block;font-size:.85rem;}
+  .gps-text .addr{color:var(--muted);margin-top:2px;}
+  .btn-mini{
+    border:1px solid var(--moss);
+    color:var(--moss-dark);
+    background:#fff;
+    border-radius:6px;
+    padding:6px 10px;
+    font-size:.78rem;
+    font-weight:600;
+    cursor:pointer;
+  }
+
+  /* Camera fields */
+  .cam-field{
+    border:1px dashed var(--line);
+    border-radius:8px;
+    padding:12px;
+    text-align:center;
+  }
+  .cam-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--moss);
+    color:#fff;
+    border:none;
+    padding:11px 18px;
+    border-radius:8px;
+    font-weight:600;
+    font-size:.9rem;
+    cursor:pointer;
+  }
+  .cam-btn:active{background:var(--moss-dark);}
+  .cam-field input[type=file]{display:none;}
+  .preview{
+    margin-top:10px;
+    max-width:100%;
+    border-radius:8px;
+    display:none;
+    border:1px solid var(--line);
+  }
+  .preview.show{display:block;}
+  .retake{
+    display:none;
+    margin-top:8px;
+    background:none;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:6px 12px;
+    font-size:.78rem;
+    color:var(--muted);
+    cursor:pointer;
+  }
+  .retake.show{display:inline-block;}
+
+  .submit-bar{
+    position:sticky;
+    bottom:0;
+    background:var(--paper);
+    padding:12px 0 0;
+  }
+  #submitBtn{
+    width:100%;
+    background:var(--clay);
+    color:#fff;
+    border:none;
+    padding:15px;
+    border-radius:10px;
+    font-size:1rem;
+    font-weight:700;
+    letter-spacing:.02em;
+    cursor:pointer;
+  }
+  #submitBtn:disabled{
+    background:#c9c3ae;
+    cursor:not-allowed;
+  }
+  .hint{
+    font-size:.75rem;
+    color:var(--muted);
+    margin-top:8px;
+    text-align:center;
+  }
+  .msg{
+    border-radius:8px;
+    padding:12px 14px;
+    font-size:.87rem;
+    margin-bottom:14px;
+    display:none;
+  }
+  .msg.show{display:block;}
+  .msg.error{background:#fbe8e6;color:var(--warn);border:1px solid #eec7c2;}
+  .msg.success{background:#e8f3ec;color:var(--moss-dark);border:1px solid #c6e0d0;}
+  .req{color:var(--warn);}
+
+  .loading-overlay{
+    position:fixed;inset:0;
+    background:rgba(28,43,35,.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:50;
+  }
+  .loading-overlay.show{display:flex;}
+  .loading-box{
+    background:#fff;
+    padding:22px 28px;
+    border-radius:10px;
+    text-align:center;
+    font-weight:600;
+    color:var(--ink);
+    font-size:.9rem;
+  }
+  .spinner{
+    width:26px;height:26px;
+    border:3px solid #ddd;
+    border-top-color:var(--moss);
+    border-radius:50%;
+    margin:0 auto 10px;
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+
+        <img src="assets/logo.png"
+             alt="Urbaser Sumeet"
+             class="logo">
+
+        <div class="header-text">
+            <h1>IEC CPCB BWG</h1>
+            <p></p>
+        </div>
+
+    </div>
+</header>
+
+<main>
+
+  <div id="topMsg" class="msg"></div>
+
+  <!-- GPS -->
+  <div class="card">
+    <h2>Location (required)</h2>
+    <div class="gps-box">
+      <div id="gpsDot" class="gps-dot pending"></div>
+      <div class="gps-text">
+        <b id="gpsStatus">Locating…</b>
+        <div class="addr" id="gpsAddr">Waiting for GPS fix</div>
+      </div>
+      <button type="button" class="btn-mini" id="retryGpsBtn">Retry</button>
+    </div>
+  </div>
+
+  <form id="entryForm">
+
+    <!-- Auto fields -->
+    <div class="card">
+      <h2>Auto-filled</h2>
+      <div class="row2">
+        <div class="field">
+          <label>ID</label>
+          <input type="text" id="idField" value="Assigned on submit" readonly>
+        </div>
+        <div class="field">
+          <label>Date</label>
+          <input type="text" id="dateField" readonly>
+        </div>
+      </div>
+      <div class="field">
+        <label>Timestamp</label>
+        <input type="text" id="timestampField" readonly>
+      </div>
+    </div>
+
+    <!-- Zone / Ward -->
+    <div class="card">
+      <h2>Zone &amp; Ward</h2>
+      <div class="field">
+        <label>Zone <span class="req">*</span></label>
+        <select id="zoneField" required>
+          <option value="">Loading zones…</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Ward <span class="req">*</span></label>
+        <select id="wardField" required disabled>
+          <option value="">Select zone first</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Location details -->
+    <div class="card">
+      <h2>Location details</h2>
+      <div class="field">
+        <label>Street Name <span class="req">*</span></label>
+        <input type="text" id="streetName" required autocomplete="off">
+      </div>
+      <div class="field">
+        <label>BWG Name <span class="req">*</span></label>
+        <input type="text" id="bwgName" required autocomplete="off">
+      </div>
+    </div>
+
+    <!-- Person details -->
+    <div class="card">
+      <h2>Details</h2>
+      <div class="field">
+        <label>Name <span class="req">*</span></label>
+        <input type="text" id="nameField" required autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Contact Number <span class="req">*</span></label>
+        <input type="tel" id="contactNumber" required inputmode="numeric" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number">
+      </div>
+      <div class="field">
+        <label>Mail ID <span class="opt">(optional)</span></label>
+        <input type="email" id="mailId" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>HH (Household count) <span class="req">*</span></label>
+        <input type="number" id="hhField" required min="0" inputmode="numeric">
+      </div>
+    </div>
+
+    <!-- Survey details -->
+    <div class="card">
+      <h2>Survey By</h2>
+      <div class="field">
+        <label>IEC Staff <span class="req">*</span></label>
+        <input type="text" id="staffField" required autocomplete="off">
+      </div>
+      <div class="field">
+        <label>CPCB <span class="req">*</span></label>
+        <div class="yn">
+          <label id="cpcbYesLabel"><input type="radio" name="cpcb" value="Yes" required> Yes</label>
+          <label id="cpcbNoLabel"><input type="radio" name="cpcb" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Remarks <span class="opt">(optional)</span></label>
+        <textarea id="remarksField"></textarea>
+      </div>
+    </div>
+
+    <!-- Photos -->
+    <div class="card">
+      <h2>Photos</h2>
+      <div class="field">
+        <label>Image1 <span class="req">*</span></label>
+        <div class="cam-field">
+          <button type="button" class="cam-btn" id="image1Trigger">📷 Take Photo</button>
+          <input type="file" id="image1Input" accept="image/*" capture="environment">
+          <img id="image1Preview" class="preview" alt="Image1 preview">
+          <br>
+          <button type="button" class="retake" id="image1Retake">Retake</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Image2 <span class="opt">(optional)</span></label>
+        <div class="cam-field">
+          <button type="button" class="cam-btn" id="image2Trigger">📷 Take Photo</button>
+          <input type="file" id="image2Input" accept="image/*" capture="environment">
+          <img id="image2Preview" class="preview" alt="Image2 preview">
+          <br>
+          <button type="button" class="retake" id="image2Retake">Retake</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-bar">
+      <button type="submit" id="submitBtn" disabled>Submit Entry</button>
+      <div class="hint" id="submitHint">Waiting for GPS location…</div>
+    </div>
+
+  </form>
+
+</main>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div id="loadingText">Submitting…</div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — paste your Apps Script Web App URL here
+   ============================================================ */
+const APP_URL = 'https://script.google.com/macros/s/AKfycbzSK_77K_xFsLR4pJOC9trif-diJIuiP-kHCcGfFvC66_q-Kwbp-4lLe9QEkF3OG8hM/exec';
+
+/* ============================================================
+   State
+   ============================================================ */
+let gps = { lat: null, lng: null, address: '' };
+let zoneWardData = {};
+let image1DataUrl = null;
+let image2DataUrl = null;
+
+// Holds the last-entered Zone / Ward / Staff for this browser
+// SESSION ONLY — a plain JS variable resets automatically on refresh.
+let lastValues = { zone: '', ward: '', staff: '' };
+
+/* ============================================================
+   Elements
+   ============================================================ */
+const el = (id) => document.getElementById(id);
+const form = el('entryForm');
+const submitBtn = el('submitBtn');
+const submitHint = el('submitHint');
+const topMsg = el('topMsg');
+
+/* ============================================================
+   Init
+   ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  setAutoDateTime();
+  loadZoneWardData();
+  acquireGps();
+  wireCameraField('image1');
+  wireCameraField('image2');
+  wireYesNoStyling();
+  el('retryGpsBtn').addEventListener('click', acquireGps);
+  form.addEventListener('submit', onSubmit);
+  el('zoneField').addEventListener('change', onZoneChange);
+});
+
+function setAutoDateTime() {
+  const now = new Date();
+  el('dateField').value = formatDate(now);
+  el('timestampField').value = formatTimestamp(now);
+}
+function formatDate(d) {
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  return `${dd}/${mm}/${d.getFullYear()}`;
+}
+function formatTimestamp(d) {
+  return `${formatDate(d)} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+}
+
+/* ============================================================
+   GPS + reverse geocoding (OpenStreetMap Nominatim)
+   ============================================================ */
+function acquireGps() {
+  const dot = el('gpsDot');
+  const status = el('gpsStatus');
+  const addr = el('gpsAddr');
+
+  dot.className = 'gps-dot pending';
+  status.textContent = 'Locating…';
+  addr.textContent = 'Waiting for GPS fix';
+  gps = { lat: null, lng: null, address: '' };
+  updateSubmitState();
+
+  if (!('geolocation' in navigator)) {
+    dot.className = 'gps-dot';
+    status.textContent = 'GPS not supported on this device/browser';
+    addr.textContent = '';
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      gps.lat = pos.coords.latitude;
+      gps.lng = pos.coords.longitude;
+      dot.className = 'gps-dot ok';
+      status.textContent = `Location acquired (±${Math.round(pos.coords.accuracy)}m)`;
+      addr.textContent = 'Looking up address…';
+
+      try {
+        const address = await reverseGeocode(gps.lat, gps.lng);
+        gps.address = address;
+        addr.textContent = address;
+      } catch (e) {
+        gps.address = `${gps.lat.toFixed(6)}, ${gps.lng.toFixed(6)}`;
+        addr.textContent = 'Address lookup failed — using coordinates only';
+      }
+      updateSubmitState();
+    },
+    (err) => {
+      dot.className = 'gps-dot';
+      status.textContent = 'GPS failed — ' + gpsErrorText(err);
+      addr.textContent = 'Tap Retry after enabling location permission';
+      updateSubmitState();
+    },
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+  );
+}
+
+function gpsErrorText(err) {
+  if (err.code === 1) return 'permission denied';
+  if (err.code === 2) return 'position unavailable';
+  if (err.code === 3) return 'timed out';
+  return 'unknown error';
+}
+
+async function reverseGeocode(lat, lng) {
+  const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
+  const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+  if (!res.ok) throw new Error('geocode failed');
+  const data = await res.json();
+  return data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+}
+
+
+async function loadZoneWardData() {
+  const zoneSel = el('zoneField');
+  try {
+    const res = await fetch(`${APP_URL}?action=getZoneWardData`);
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'failed to load zones');
+    zoneWardData = json.data;
+
+    zoneSel.innerHTML = '<option value="">Select Zone</option>';
+    Object.keys(zoneWardData).sort().forEach(z => {
+      const opt = document.createElement('option');
+      opt.value = z; opt.textContent = z;
+      zoneSel.appendChild(opt);
+    });
+
+    // Pre-fill from last entry in this session (not after refresh)
+    if (lastValues.zone && zoneWardData[lastValues.zone]) {
+      zoneSel.value = lastValues.zone;
+      onZoneChange();
+      if (lastValues.ward) el('wardField').value = lastValues.ward;
+    }
+  } catch (e) {
+    zoneSel.innerHTML = '<option value="">Failed to load — check connection</option>';
+    showMsg('error', 'Could not load Zone list. Check your internet connection and reload the page.');
+  }
+}
+
+function onZoneChange() {
+  const zone = el('zoneField').value;
+  const wardSel = el('wardField');
+  wardSel.innerHTML = '';
+  if (!zone || !zoneWardData[zone]) {
+    wardSel.innerHTML = '<option value="">Select zone first</option>';
+    wardSel.disabled = true;
+    return;
+  }
+  wardSel.disabled = false;
+  wardSel.innerHTML = '<option value="">Select Ward</option>';
+  zoneWardData[zone].sort().forEach(w => {
+    const opt = document.createElement('option');
+    opt.value = w; opt.textContent = w;
+    wardSel.appendChild(opt);
+  });
+}
+
+
+function wireYesNoStyling() {
+  const yes = el('cpcbYesLabel'), no = el('cpcbNoLabel');
+  [yes, no].forEach(lbl => {
+    lbl.querySelector('input').addEventListener('change', () => {
+      yes.classList.toggle('checked', yes.querySelector('input').checked);
+      no.classList.toggle('checked', no.querySelector('input').checked);
+    });
+  });
+}
+
+
+function wireCameraField(key) {
+  const trigger = el(key + 'Trigger');
+  const input = el(key + 'Input');
+  const preview = el(key + 'Preview');
+  const retake = el(key + 'Retake');
+
+  trigger.addEventListener('click', () => input.click());
+
+  input.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    trigger.textContent = 'Processing…';
+    trigger.disabled = true;
+    try {
+      const watermarked = await watermarkImage(file);
+      if (key === 'image1') image1DataUrl = watermarked;
+      else image2DataUrl = watermarked;
+      preview.src = watermarked;
+      preview.classList.add('show');
+      retake.classList.add('show');
+      trigger.textContent = '📷 Retake with camera';
+    } catch (err) {
+      showMsg('error', 'Could not process the photo. Please try again.');
+    } finally {
+      trigger.disabled = false;
+      updateSubmitState();
+      input.value = '';
+    }
+  });
+
+  retake.addEventListener('click', () => {
+    if (key === 'image1') image1DataUrl = null;
+    else image2DataUrl = null;
+    preview.classList.remove('show');
+    retake.classList.remove('show');
+    trigger.textContent = '📷 Take Photo';
+    updateSubmitState();
+  });
+}
+
+function watermarkImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('read failed'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('image load failed'));
+      img.onload = () => {
+        // Resize down for reasonable upload size
+        const MAX_W = 1280;
+        const scale = Math.min(1, MAX_W / img.width);
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+
+        
+        const now = new Date();
+        const line1 = gps.address || (gps.lat ? `${gps.lat.toFixed(6)}, ${gps.lng.toFixed(6)}` : 'Location unavailable');
+        const line2 = formatTimestamp(now);
+
+        const padding = 10;
+        const fontSize = Math.max(12, Math.round(w * 0.028));
+        ctx.font = `${fontSize}px sans-serif`;
+        const wrapped = wrapText(ctx, line1, w - padding * 2);
+        const lines = [...wrapped, line2];
+        const lineHeight = fontSize * 1.35;
+        const boxHeight = lines.length * lineHeight + padding * 2;
+
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillRect(0, h - boxHeight, w, boxHeight);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.textBaseline = 'top';
+        lines.forEach((ln, i) => {
+          ctx.fillText(ln, padding, h - boxHeight + padding + i * lineHeight);
+        });
+
+        resolve(canvas.toDataURL('image/jpeg', 0.72));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function wrapText(ctx, text, maxWidth) {
+  const words = text.split(' ');
+  const lines = [];
+  let current = '';
+  words.forEach(word => {
+    const test = current ? current + ' ' + word : word;
+    if (ctx.measureText(test).width > maxWidth && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = test;
+    }
+  });
+  if (current) lines.push(current);
+  return lines.slice(0, 2); // cap at 2 lines for the address
+}
+
+
+function updateSubmitState() {
+  const gpsOk = gps.lat !== null && gps.lng !== null;
+  const image1Ok = !!image1DataUrl;
+  submitBtn.disabled = !(gpsOk && image1Ok);
+  if (!gpsOk) {
+    submitHint.textContent = 'Waiting for GPS location — submit is blocked until GPS is acquired.';
+  } else if (!image1Ok) {
+    submitHint.textContent = 'Image1 is required — take a photo to continue.';
+  } else {
+    submitHint.textContent = '';
+  }
+}
+
+
+async function onSubmit(e) {
+  e.preventDefault();
+  hideMsg();
+
+  if (!gps.lat || !gps.lng) {
+    showMsg('error', 'GPS location has not been acquired yet. Please wait or tap Retry.');
+    return;
+  }
+  if (!image1DataUrl) {
+    showMsg('error', 'Image1 is required.');
+    return;
+  }
+  const cpcb = form.querySelector('input[name=cpcb]:checked');
+  if (!cpcb) {
+    showMsg('error', 'Please select CPCB Yes/No.');
+    return;
+  }
+
+  const now = new Date();
+  const payload = {
+    date: formatDate(now),
+    timestamp: formatTimestamp(now),
+    zone: el('zoneField').value,
+    ward: el('wardField').value,
+    location: `${gps.lat.toFixed(6)}, ${gps.lng.toFixed(6)} — ${gps.address}`,
+    streetName: el('streetName').value.trim(),
+    bwgName: el('bwgName').value.trim(),
+    name: el('nameField').value.trim(),
+    contactNumber: el('contactNumber').value.trim(),
+    mailId: el('mailId').value.trim(),
+    hh: el('hhField').value,
+    staff: el('staffField').value.trim(),
+    cpcb: cpcb.value,
+    remarks: el('remarksField').value.trim(),
+    image1: image1DataUrl,
+    image2: image2DataUrl || ''
+  };
+
+  setLoading(true, 'Uploading photos & saving entry…');
+  submitBtn.disabled = true;
+
+  try {
+    const res = await fetch(APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight on Apps Script
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'Submission failed');
+
+    
+    lastValues = { zone: payload.zone, ward: payload.ward, staff: payload.staff };
+
+    el('idField').value = json.data.id;
+    showMsg('success', `Entry saved successfully. ID: ${json.data.id}`);
+    resetFormForNextEntry();
+  } catch (err) {
+    showMsg('error', 'Submission failed: ' + err.message + '. Please try again.');
+  } finally {
+    setLoading(false);
+    updateSubmitState();
+  }
+}
+
+function resetFormForNextEntry() {
+  el('streetName').value = '';
+  el('bwgName').value = '';
+  el('nameField').value = '';
+  el('contactNumber').value = '';
+  el('mailId').value = '';
+  el('hhField').value = '';
+  el('remarksField').value = '';
+  form.querySelectorAll('input[name=cpcb]').forEach(r => r.checked = false);
+  el('cpcbYesLabel').classList.remove('checked');
+  el('cpcbNoLabel').classList.remove('checked');
+
+  ['image1','image2'].forEach(key => {
+    if (key === 'image1') image1DataUrl = null; else image2DataUrl = null;
+    el(key + 'Preview').classList.remove('show');
+    el(key + 'Retake').classList.remove('show');
+    el(key + 'Trigger').textContent = '📷 Take Photo';
+  });
+
+  
+  if (lastValues.zone) {
+    el('zoneField').value = lastValues.zone;
+    onZoneChange();
+    if (lastValues.ward) el('wardField').value = lastValues.ward;
+  }
+  if (lastValues.staff) el('staffField').value = lastValues.staff;
+
+  el('idField').value = 'Assigned on submit';
+  setAutoDateTime();
+  acquireGps();
+}
+
+
+function showMsg(type, text) {
+  topMsg.className = 'msg show ' + type;
+  topMsg.textContent = text;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function hideMsg() {
+  topMsg.className = 'msg';
+}
+function setLoading(show, text) {
+  el('loadingOverlay').classList.toggle('show', show);
+  if (text) el('loadingText').textContent = text;
+}
+</script>
+</body>
+</html>
