@@ -578,8 +578,8 @@ function acquireGps() {
     },
     (err) => {
       dot.className = 'gps-dot';
-      status.textContent = 'GPS failed — ' + gpsErrorText(err);
-      addr.textContent = 'Tap Retry after enabling location permission';
+      status.textContent = 'GPS Not Available';
+      addr.textContent = 'You can still submit this entry.';
       updateSubmitState();
     },
     { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
@@ -721,7 +721,9 @@ function watermarkImage(file) {
 
         
         const now = new Date();
-        const line1 = gps.address || (gps.lat ? `${gps.lat.toFixed(6)}, ${gps.lng.toFixed(6)}` : 'Location unavailable');
+        const line1 = gps.lat
+  ? (gps.address || `${gps.lat.toFixed(6)}, ${gps.lng.toFixed(6)}`)
+  : 'GPS Not Available';
         const line2 = formatTimestamp(now);
 
         const padding = 10;
@@ -768,13 +770,15 @@ function wrapText(ctx, text, maxWidth) {
 
 
 function updateSubmitState() {
-  const gpsOk = gps.lat !== null && gps.lng !== null;
   const image1Ok = !!image1DataUrl;
-  submitBtn.disabled = !(gpsOk && image1Ok);
-  if (!gpsOk) {
-    submitHint.textContent = 'Waiting for GPS location — submit is blocked until GPS is acquired.';
-  } else if (!image1Ok) {
-    submitHint.textContent = 'Image1 is required — take a photo to continue.';
+
+  // Only Image1 is mandatory
+  submitBtn.disabled = !image1Ok;
+
+  if (!image1Ok) {
+    submitHint.textContent = 'Image1 is required.';
+  } else if (!gps.lat) {
+    submitHint.textContent = 'GPS not available. Entry can still be submitted.';
   } else {
     submitHint.textContent = '';
   }
@@ -785,10 +789,7 @@ async function onSubmit(e) {
   e.preventDefault();
   hideMsg();
 
-  if (!gps.lat || !gps.lng) {
-    showMsg('error', 'GPS location has not been acquired yet. Please wait or tap Retry.');
-    return;
-  }
+  
   if (!image1DataUrl) {
     showMsg('error', 'Image1 is required.');
     return;
@@ -805,7 +806,9 @@ async function onSubmit(e) {
     timestamp: formatTimestamp(now),
     zone: el('zoneField').value,
     ward: el('wardField').value,
-    location: `${gps.lat.toFixed(6)}, ${gps.lng.toFixed(6)} — ${gps.address}`,
+    location: gps.lat
+  ? `${gps.lat.toFixed(6)}, ${gps.lng.toFixed(6)} — ${gps.address}`
+  : "GPS Not Available",
     streetName: el('streetName').value.trim(),
     bwgName: el('bwgName').value.trim(),
     name: el('nameField').value.trim(),
