@@ -41,7 +41,6 @@
     align-items:center;
     gap:15px;
 }
-
 .logo{
     width:55px;
     height:55px;
@@ -51,23 +50,19 @@
     padding:3px;
     flex-shrink:0;
 }
-
 .header-text{
     display:flex;
     flex-direction:column;
 }
-
 .header-text h1{
     margin:0;
     font-size:1.05rem;
     font-weight:700;
 }
-
 .header-text p{
     margin:4px 0 0;
     font-size:.78rem;
 }
-
   header h1{
     margin:0;
     font-size:1.05rem;
@@ -168,7 +163,6 @@
     background:#eaf3ee;
     color:var(--moss-dark);
   }
-
   /* GPS status */
   .gps-box{
     display:flex;
@@ -201,7 +195,6 @@
     font-weight:600;
     cursor:pointer;
   }
-
   /* Camera fields */
   .cam-field{
     border:1px dashed var(--line);
@@ -244,7 +237,6 @@
     cursor:pointer;
   }
   .retake.show{display:inline-block;}
-
   .submit-bar{
     position:sticky;
     bottom:0;
@@ -284,7 +276,6 @@
   .msg.error{background:#fbe8e6;color:var(--warn);border:1px solid #eec7c2;}
   .msg.success{background:#e8f3ec;color:var(--moss-dark);border:1px solid #c6e0d0;}
   .req{color:var(--warn);}
-
   .loading-overlay{
     position:fixed;inset:0;
     background:rgba(28,43,35,.55);
@@ -315,26 +306,19 @@
 </style>
 </head>
 <body>
-
 <header>
     <div class="header-container">
-
         <img src="assets/logo.png"
              alt="Urbaser Sumeet"
              class="logo">
-
         <div class="header-text">
             <h1>IEC CPCB BWG</h1>
             <p></p>
         </div>
-
     </div>
 </header>
-
 <main>
-
   <div id="topMsg" class="msg"></div>
-
   <!-- GPS -->
   <div class="card">
     <h2>Location (required)</h2>
@@ -347,9 +331,7 @@
       <button type="button" class="btn-mini" id="retryGpsBtn">Retry</button>
     </div>
   </div>
-
   <form id="entryForm">
-
     <!-- Auto fields -->
     <div class="card">
       <h2>Auto-filled</h2>
@@ -368,7 +350,6 @@
         <input type="text" id="timestampField" readonly>
       </div>
     </div>
-
     <!-- Zone / Ward -->
     <div class="card">
       <h2>Zone &amp; Ward</h2>
@@ -385,7 +366,6 @@
         </select>
       </div>
     </div>
-
     <!-- Location details -->
     <div class="card">
       <h2>Location details</h2>
@@ -394,11 +374,27 @@
         <input type="text" id="streetName" required autocomplete="off">
       </div>
       <div class="field">
+        <label>Category <span class="req">*</span></label>
+        <select id="categoryField" required>
+          <option value="">Select Category</option>
+          <option value="Apartment">Apartment</option>
+          <option value="Commercial">Commercial</option>
+          <option value="Educational Institution">Educational Institution</option>
+          <option value="Hospital">Hospital</option>
+          <option value="Hotel">Hotel</option>
+          <option value="IT Park | Office Towers">IT Park | Office Towers</option>
+          <option value="Lodge | PG">Lodge | PG</option>
+          <option value="Malls">Malls</option>
+          <option value="Marriage Hall">Marriage Hall</option>
+          <option value="Others">Others</option>
+          <option value="Restaurant">Restaurant</option>
+        </select>
+      </div>
+      <div class="field">
         <label>BWG Name <span class="req">*</span></label>
         <input type="text" id="bwgName" required autocomplete="off">
       </div>
     </div>
-
     <!-- Person details -->
     <div class="card">
       <h2>Details</h2>
@@ -419,7 +415,6 @@
         <input type="number" id="hhField" required min="0" inputmode="numeric">
       </div>
     </div>
-
     <!-- Survey details -->
     <div class="card">
       <h2>Survey By</h2>
@@ -439,7 +434,6 @@
         <textarea id="remarksField"></textarea>
       </div>
     </div>
-
     <!-- Photos -->
     <div class="card">
       <h2>Photos</h2>
@@ -464,29 +458,23 @@
         </div>
       </div>
     </div>
-
     <div class="submit-bar">
       <button type="submit" id="submitBtn" disabled>Submit Entry</button>
       <div class="hint" id="submitHint">Waiting for GPS location…</div>
     </div>
-
   </form>
-
 </main>
-
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-box">
     <div class="spinner"></div>
     <div id="loadingText">Submitting…</div>
   </div>
 </div>
-
 <script>
 /* ============================================================
    CONFIG — paste your Apps Script Web App URL here
    ============================================================ */
 const APP_URL = 'https://script.google.com/macros/s/AKfycbzSK_77K_xFsLR4pJOC9trif-diJIuiP-kHCcGfFvC66_q-Kwbp-4lLe9QEkF3OG8hM/exec';
-
 /* ============================================================
    State
    ============================================================ */
@@ -494,11 +482,9 @@ let gps = { lat: null, lng: null, address: '' };
 let zoneWardData = {};
 let image1DataUrl = null;
 let image2DataUrl = null;
-
 // Holds the last-entered Zone / Ward / Staff for this browser
 // SESSION ONLY — a plain JS variable resets automatically on refresh.
 let lastValues = { zone: '', ward: '', staff: '' };
-
 /* ============================================================
    Elements
    ============================================================ */
@@ -507,7 +493,6 @@ const form = el('entryForm');
 const submitBtn = el('submitBtn');
 const submitHint = el('submitHint');
 const topMsg = el('topMsg');
-
 /* ============================================================
    Init
    ============================================================ */
@@ -522,7 +507,6 @@ window.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', onSubmit);
   el('zoneField').addEventListener('change', onZoneChange);
 });
-
 function setAutoDateTime() {
   const now = new Date();
   el('dateField').value = formatDate(now);
@@ -536,7 +520,6 @@ function formatDate(d) {
 function formatTimestamp(d) {
   return `${formatDate(d)} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
 }
-
 /* ============================================================
    GPS + reverse geocoding (OpenStreetMap Nominatim)
    ============================================================ */
@@ -544,20 +527,17 @@ function acquireGps() {
   const dot = el('gpsDot');
   const status = el('gpsStatus');
   const addr = el('gpsAddr');
-
   dot.className = 'gps-dot pending';
   status.textContent = 'Locating…';
   addr.textContent = 'Waiting for GPS fix';
   gps = { lat: null, lng: null, address: '' };
   updateSubmitState();
-
   if (!('geolocation' in navigator)) {
     dot.className = 'gps-dot';
     status.textContent = 'GPS not supported on this device/browser';
     addr.textContent = '';
     return;
   }
-
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
       gps.lat = pos.coords.latitude;
@@ -565,7 +545,6 @@ function acquireGps() {
       dot.className = 'gps-dot ok';
       status.textContent = `Location acquired (±${Math.round(pos.coords.accuracy)}m)`;
       addr.textContent = 'Looking up address…';
-
       try {
         const address = await reverseGeocode(gps.lat, gps.lng);
         gps.address = address;
@@ -585,14 +564,12 @@ function acquireGps() {
     { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
   );
 }
-
 function gpsErrorText(err) {
   if (err.code === 1) return 'permission denied';
   if (err.code === 2) return 'position unavailable';
   if (err.code === 3) return 'timed out';
   return 'unknown error';
 }
-
 async function reverseGeocode(lat, lng) {
   const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
   const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
@@ -600,8 +577,6 @@ async function reverseGeocode(lat, lng) {
   const data = await res.json();
   return data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 }
-
-
 async function loadZoneWardData() {
   const zoneSel = el('zoneField');
   try {
@@ -609,14 +584,12 @@ async function loadZoneWardData() {
     const json = await res.json();
     if (!json.success) throw new Error(json.error || 'failed to load zones');
     zoneWardData = json.data;
-
     zoneSel.innerHTML = '<option value="">Select Zone</option>';
     Object.keys(zoneWardData).sort().forEach(z => {
       const opt = document.createElement('option');
       opt.value = z; opt.textContent = z;
       zoneSel.appendChild(opt);
     });
-
     // Pre-fill from last entry in this session (not after refresh)
     if (lastValues.zone && zoneWardData[lastValues.zone]) {
       zoneSel.value = lastValues.zone;
@@ -628,7 +601,6 @@ async function loadZoneWardData() {
     showMsg('error', 'Could not load Zone list. Check your internet connection and reload the page.');
   }
 }
-
 function onZoneChange() {
   const zone = el('zoneField').value;
   const wardSel = el('wardField');
@@ -646,8 +618,6 @@ function onZoneChange() {
     wardSel.appendChild(opt);
   });
 }
-
-
 function wireYesNoStyling() {
   const yes = el('cpcbYesLabel'), no = el('cpcbNoLabel');
   [yes, no].forEach(lbl => {
@@ -657,16 +627,12 @@ function wireYesNoStyling() {
     });
   });
 }
-
-
 function wireCameraField(key) {
   const trigger = el(key + 'Trigger');
   const input = el(key + 'Input');
   const preview = el(key + 'Preview');
   const retake = el(key + 'Retake');
-
   trigger.addEventListener('click', () => input.click());
-
   input.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -688,7 +654,6 @@ function wireCameraField(key) {
       input.value = '';
     }
   });
-
   retake.addEventListener('click', () => {
     if (key === 'image1') image1DataUrl = null;
     else image2DataUrl = null;
@@ -698,7 +663,6 @@ function wireCameraField(key) {
     updateSubmitState();
   });
 }
-
 function watermarkImage(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -712,20 +676,17 @@ function watermarkImage(file) {
         const scale = Math.min(1, MAX_W / img.width);
         const w = Math.round(img.width * scale);
         const h = Math.round(img.height * scale);
-
         const canvas = document.createElement('canvas');
         canvas.width = w;
         canvas.height = h;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, w, h);
-
         
         const now = new Date();
         const line1 = gps.lat
   ? (gps.address || `${gps.lat.toFixed(6)}, ${gps.lng.toFixed(6)}`)
   : 'GPS Not Available';
         const line2 = formatTimestamp(now);
-
         const padding = 10;
         const fontSize = Math.max(12, Math.round(w * 0.028));
         ctx.font = `${fontSize}px sans-serif`;
@@ -733,16 +694,13 @@ function watermarkImage(file) {
         const lines = [...wrapped, line2];
         const lineHeight = fontSize * 1.35;
         const boxHeight = lines.length * lineHeight + padding * 2;
-
         ctx.fillStyle = 'rgba(0,0,0,0.55)';
         ctx.fillRect(0, h - boxHeight, w, boxHeight);
-
         ctx.fillStyle = '#ffffff';
         ctx.textBaseline = 'top';
         lines.forEach((ln, i) => {
           ctx.fillText(ln, padding, h - boxHeight + padding + i * lineHeight);
         });
-
         resolve(canvas.toDataURL('image/jpeg', 0.72));
       };
       img.src = reader.result;
@@ -750,7 +708,6 @@ function watermarkImage(file) {
     reader.readAsDataURL(file);
   });
 }
-
 function wrapText(ctx, text, maxWidth) {
   const words = text.split(' ');
   const lines = [];
@@ -767,24 +724,18 @@ function wrapText(ctx, text, maxWidth) {
   if (current) lines.push(current);
   return lines.slice(0, 2); // cap at 2 lines for the address
 }
-
-
 function updateSubmitState() {
   // Nothing is mandatory now
   submitBtn.disabled = false;
-
   if (!gps.lat) {
     submitHint.textContent = 'GPS not available. Entry can still be submitted.';
   } else {
     submitHint.textContent = '';
   }
 }
-
-
 async function onSubmit(e) {
   e.preventDefault();
   hideMsg();
-
   
   
   const cpcb = form.querySelector('input[name=cpcb]:checked');
@@ -792,7 +743,6 @@ async function onSubmit(e) {
     showMsg('error', 'Please select CPCB Yes/No.');
     return;
   }
-
   const now = new Date();
   const payload = {
     date: formatDate(now),
@@ -803,6 +753,7 @@ async function onSubmit(e) {
   ? `${gps.lat.toFixed(6)}, ${gps.lng.toFixed(6)} — ${gps.address}`
   : "GPS Not Available",
     streetName: el('streetName').value.trim(),
+    category: el('categoryField').value,
     bwgName: el('bwgName').value.trim(),
     name: el('nameField').value.trim(),
     contactNumber: el('contactNumber').value.trim(),
@@ -814,10 +765,8 @@ async function onSubmit(e) {
     image1: image1DataUrl || '',
     image2: image2DataUrl || ''
   };
-
   setLoading(true, 'Uploading photos & saving entry…');
   submitBtn.disabled = true;
-
   try {
     const res = await fetch(APP_URL, {
       method: 'POST',
@@ -826,10 +775,8 @@ async function onSubmit(e) {
     });
     const json = await res.json();
     if (!json.success) throw new Error(json.error || 'Submission failed');
-
     
     lastValues = { zone: payload.zone, ward: payload.ward, staff: payload.staff };
-
     el('idField').value = json.data.id;
     showMsg('success', `Entry saved successfully. ID: ${json.data.id}`);
     resetFormForNextEntry();
@@ -840,9 +787,9 @@ async function onSubmit(e) {
     updateSubmitState();
   }
 }
-
 function resetFormForNextEntry() {
   el('streetName').value = '';
+  el('categoryField').value = '';
   el('bwgName').value = '';
   el('nameField').value = '';
   el('contactNumber').value = '';
@@ -852,14 +799,12 @@ function resetFormForNextEntry() {
   form.querySelectorAll('input[name=cpcb]').forEach(r => r.checked = false);
   el('cpcbYesLabel').classList.remove('checked');
   el('cpcbNoLabel').classList.remove('checked');
-
   ['image1','image2'].forEach(key => {
     if (key === 'image1') image1DataUrl = null; else image2DataUrl = null;
     el(key + 'Preview').classList.remove('show');
     el(key + 'Retake').classList.remove('show');
     el(key + 'Trigger').textContent = '📷 Take Photo';
   });
-
   
   if (lastValues.zone) {
     el('zoneField').value = lastValues.zone;
@@ -867,13 +812,10 @@ function resetFormForNextEntry() {
     if (lastValues.ward) el('wardField').value = lastValues.ward;
   }
   if (lastValues.staff) el('staffField').value = lastValues.staff;
-
   el('idField').value = 'Assigned on submit';
   setAutoDateTime();
   acquireGps();
 }
-
-
 function showMsg(type, text) {
   topMsg.className = 'msg show ' + type;
   topMsg.textContent = text;
